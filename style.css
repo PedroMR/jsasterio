@@ -8,7 +8,8 @@
 body {
 	margin: 0px;
 	font-family: "dejavu sans", sans-serif; 
-	background-image: url(img/scroll.jpg);
+	background-image: /* url("http://preview.turbosquid.com/Preview/2012/04/10__12_14_21/GC1%20WALL12%20CUT%20HEWN%20BLOCK.jpg255e6c55-824b-4f64-9862-aeb88bb38090Large.jpg"); */
+	url(img/scroll.jpg); 
 }
 
 #loading {

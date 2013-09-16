@@ -88,6 +88,7 @@ var Loader = {
 		"js/story/story.js",
 
 		"js/asterio/story.js",
+		"js/asterio/beings.js",
 
 		"js/debug/graph.js",
 		"js/debug/story.js" 
@@ -95,7 +96,8 @@ var Loader = {
 	],
 	
 	_responseVersion: function(data) {
-		this.version = data.split("\n").shift();
+//		this.version = data.split("\n").shift();
+		this.version = "r"+Math.random();
 		this._processQueue();
 	},
 	

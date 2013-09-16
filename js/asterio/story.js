@@ -6,6 +6,7 @@
 RPG.Story.Asterio = OZ.Class().extend(RPG.Story);
 
 RPG.Story.Asterio.prototype.init = function() {
+	RPG.UI.Status.ShowStats = ['hp', 'rage', 'food'];
 	this.parent();
 	RPG.UI.sound.preload("tristram");
 	
@@ -27,13 +28,12 @@ RPG.Story.prototype.generatePC = function() {
 RPG.Story.Asterio.prototype._buildMaps = function() {
 	this._tutorial = new RPG.Map.Tutorial();
 
-	var level = 1;
 	var gen = RPG.Generators.Digger.getInstance();
-	var map = gen.generate("Generic dungeon #" + level, new RPG.Coords(60, 60), level, {ctor:RPG.Map.RandomDungeon});
+	var map = gen.generate("Asterio's Cave", new RPG.Coords(100, 40), 1);
 	RPG.Decorators.Hidden.getInstance().decorate(map, 0.01);
 	
 	/* enemies */
-	var max = 3 + Math.floor(Math.random()*6) + level;
+	var max = 3 + Math.floor(Math.random()*6);
 //	RPG.Decorators.Beings.getInstance().decorate(map, max);
 	
 	/* items */
@@ -64,11 +64,9 @@ RPG.Story.Asterio.prototype._addCallbacks = function() {
 }
 
 RPG.Story.Asterio.prototype._createPC = function(race, profession, name) {
-	var pc = this.parent(race, profession, name);
-
-	var rocks = new RPG.Items.Rock();
-	rocks.setAmount(5);
-	pc.addItem(rocks);
+//	var pc = new RPG.Beings.God(race, profession);
+	var pc = new RPG.Beings.Minotaur();
+	pc.setName(name);
 
 	return pc;
 }

@@ -3,6 +3,8 @@
  */
 RPG.UI.Status = OZ.Class();
 
+RPG.UI.Status.ShowStats = ['hp', 'mana', 'map'];
+
 RPG.UI.Status.prototype.init = function(ul) {
 	this._dom = {
 		feats: {},
@@ -33,16 +35,21 @@ RPG.UI.Status.prototype.fromJSON = function(data) {
 	for (var p in data.misc) { this._dom.misc[p].innerHTML = data.misc[p]; }
 }
 
+function updateInnerHTMLIfExists(container, str) {
+	if (container)
+		container.innerHTML = str;
+}
+
 RPG.UI.Status.prototype.updateMap = function(str) {
-	this._dom.misc.map.innerHTML = str;
+	updateInnerHTMLIfExists(this._dom.misc.map, str);
 }
 
 RPG.UI.Status.prototype.updateRounds = function(rounds) {
-	this._dom.misc.rounds.innerHTML = rounds;
+	updateInnerHTMLIfExists(this._dom.misc.rounds, rounds);
 }
 
 RPG.UI.Status.prototype.updateName = function(name) {
-	this._dom.misc.name.innerHTML = name;
+	updateInnerHTMLIfExists(this._dom.misc.name, name);
 }
 
 RPG.UI.Status.prototype.updateFeat = function(feat, value) {
@@ -57,6 +64,23 @@ RPG.UI.Status.prototype.updateStat = function(stat, value) {
 	elm.innerHTML = value; 
 }
 
+RPG.UI.Status.prototype._shouldShowStat = function(statName) {
+	return RPG.UI.Status.ShowStats.indexOf(statName) >= 0;
+}
+
+RPG.UI.Status.prototype._showStatWithFeatMax = function(ul, title, stat, feat) {
+		var li = OZ.DOM.elm("li");
+		ul.appendChild(li);
+		li.innerHTML = title+": ";
+		var s = OZ.DOM.elm("span");
+		this._dom.stats[stat] = s;
+		li.appendChild(s);
+		li.appendChild(OZ.DOM.text("/"));
+		var s = OZ.DOM.elm("span");
+		this._dom.feats[feat] = s;
+		li.appendChild(s);
+}
+
 RPG.UI.Status.prototype._build = function(ul) {
 	/* name */
 	var li = OZ.DOM.elm("li", {fontWeight:"bold"});
@@ -64,28 +88,22 @@ RPG.UI.Status.prototype._build = function(ul) {
 	this._dom.misc.name = li;
 	
 	/* hp */
-	var li = OZ.DOM.elm("li");
-	ul.appendChild(li);
-	li.innerHTML = "HP: ";
-	var s = OZ.DOM.elm("span");
-	this._dom.stats[RPG.STAT_HP] = s;
-	li.appendChild(s);
-	li.appendChild(OZ.DOM.text("/"));
-	var s = OZ.DOM.elm("span");
-	this._dom.feats[RPG.FEAT_MAX_HP] = s;
-	li.appendChild(s);
+	if (this._shouldShowStat("hp")) {
+		this._showStatWithFeatMax(ul, "HP", RPG.STAT_HP, RPG.FEAT_MAX_HP);
+	}
 	
 	/* mana */
-	var li = OZ.DOM.elm("li");
-	ul.appendChild(li);
-	li.innerHTML = "Mana: ";
-	var s = OZ.DOM.elm("span");
-	this._dom.stats[RPG.STAT_MANA] = s;
-	li.appendChild(s);
-	li.appendChild(OZ.DOM.text("/"));
-	var s = OZ.DOM.elm("span");
-	this._dom.feats[RPG.FEAT_MAX_MANA] = s;
-	li.appendChild(s);
+	if (this._shouldShowStat("mana")) {
+		this._showStatWithFeatMax(ul, "Mana", RPG.STAT_MANA, RPG.FEAT_MAX_MANA);
+	}
+
+	if (this._shouldShowStat("food")) {
+		this._showStatWithFeatMax(ul, "Food", RPG.STAT_FOOD, RPG.FEAT_MAX_FOOD);
+	}
+
+	if (this._shouldShowStat("rage")) {
+		this._showStatWithFeatMax(ul, "Rage", RPG.STAT_RAGE, RPG.FEAT_MAX_RAGE);
+	}
 
 	/* rounds */
 	var li = OZ.DOM.elm("li");
@@ -96,10 +114,12 @@ RPG.UI.Status.prototype._build = function(ul) {
 	li.appendChild(s);
 	
 	/* level */
-	var li = OZ.DOM.elm("li");
-	ul.appendChild(li);
-	li.innerHTML = "Map: ";
-	var s = OZ.DOM.elm("span");
-	this._dom.misc.map = s;
-	li.appendChild(s);
+	if (this._shouldShowStat("map")) {
+		var li = OZ.DOM.elm("li");
+		ul.appendChild(li);
+		li.innerHTML = "Map: ";
+		var s = OZ.DOM.elm("span");
+		this._dom.misc.map = s;
+		li.appendChild(s);
+	}
 }
